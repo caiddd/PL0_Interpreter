@@ -27,7 +27,7 @@ Checks:    "bugprone-*,\
             -modernize-use-trailing-return-type,\
             -misc-non-private-member-variables-in-classes"
 WarningsAsErrors:   '-*'
-HeaderFilterRegex: '^.*\.hpp$'
+HeaderFilterRegex: '^.*\.h(|p{2})$'
 FormatStyle: file
 AnalyzeTemporaryDtors: false
 # check https://clang.llvm.org/extra/clang-tidy/checks/readability/identifier-naming.html
