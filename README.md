@@ -1,4 +1,3 @@
-# Hello world
+# PL0解释器
 
-如果这个模板有用，请点一个🌟吧！
-[Github Repo](https://github.com/Codesire-Deng/TemplateRepoCxx)
+此项目为河南大学编译原理实验，本人在其上进行适当扩展
