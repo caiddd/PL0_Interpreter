@@ -8,6 +8,7 @@ namespace pl0 {
 
 #define IGNORE_TOKEN(name, string)
 
+// This is for better presentation
 #define TOKEN_LIST(T, K)     \
   T(UNUSED, "unused")           \
   /* End of source indicator */ \
@@ -53,10 +54,12 @@ namespace pl0 {
   /* Error */                   \
   T(ILLEGAL, "illegal token")
 
+// Gets the left side of the above macro as the enum name
 #define T(name, string) name,
 enum class Token : int { TOKEN_LIST(T, T) };
 #undef T
 
+// Gets the right-hand build string array of the macros mentioned above
 #define T(name, string) string,
 const char* const token_string[] = {TOKEN_LIST(T, T)};
 #undef T
