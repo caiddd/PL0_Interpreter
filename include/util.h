@@ -1,5 +1,5 @@
-#ifndef PARSING_UTIL_H
-#define PARSING_UTIL_H
+#ifndef UTIL_H
+#define UTIL_H
 
 #include <sstream>
 
@@ -16,4 +16,4 @@ struct Location {
 
 }; // namespace pl0
 
-#endif // PARSING_UTIL_H
+#endif // UTIL_H
