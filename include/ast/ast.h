@@ -45,11 +45,15 @@ AST_NODE_LIST(DEF_FORWARD_DECLARATION)
 enum class AstNodeType : int { AST_NODE_LIST(DEF_ENUM_AST_NODE_TYPE) };
 #undef DEF_ENUM_AST_NODE_TYPE
 
-#define PROPERTY_GETTER(field) \
-  decltype(field##_) field() const { return field##_; }
+#define PROPERTY_GETTER(field)       \
+  decltype(field##_) field() const { \
+    return field##_;                 \
+  }
 
-#define PROPERTY_CONST_REF_GETTER(field) \
-  const decltype(field##_) &field() const { return field##_; }
+#define PROPERTY_CONST_REF_GETTER(field)    \
+  const decltype(field##_) &field() const { \
+    return field##_;                        \
+  }
 
 class AstNode {
  public:
@@ -63,25 +67,25 @@ class AstNode {
   AstNodeType type_;
 };
 
-class Declaration : AstNode {
+class Declaration : public AstNode {
  public:
   explicit Declaration(AstNodeType type) : AstNode(type) {}
   ~Declaration() override = default;
 };
 
-class Expression : AstNode {
+class Expression : public AstNode {
  public:
   explicit Expression(AstNodeType type) : AstNode(type) {}
   ~Expression() override = default;
 };
 
-class Statement : AstNode {
+class Statement : public AstNode {
  public:
   explicit Statement(AstNodeType type) : AstNode(type) {}
   ~Statement() override = default;
 };
 
-class VariableDeclaration : Declaration {
+class VariableDeclaration : public Declaration {
  public:
   using ListType = std::vector<Variable *>;
 
@@ -98,7 +102,7 @@ class VariableDeclaration : Declaration {
   PROPERTY_CONST_REF_GETTER(variables)
 };
 
-class ConstantDeclaration : Declaration {
+class ConstantDeclaration : public Declaration {
  public:
   using ListType = std::vector<Constant *>;
 
@@ -115,7 +119,7 @@ class ConstantDeclaration : Declaration {
   PROPERTY_CONST_REF_GETTER(constants);
 };
 
-class ProcedureDeclaration final : Declaration {
+class ProcedureDeclaration final : public Declaration {
   Procedure *symbol_;
   Block *main_block_;
 
@@ -132,7 +136,7 @@ class ProcedureDeclaration final : Declaration {
   PROPERTY_GETTER(main_block)
 };
 
-class Block final : Statement {
+class Block final : public Statement {
   Scope *belonging_scope_;
   VariableDeclaration *var_declaration_;
   ConstantDeclaration *const_declaration_;
@@ -171,7 +175,7 @@ class Block final : Statement {
   PROPERTY_GETTER(body)
 };
 
-class StatementList final : Statement {
+class StatementList final : public Statement {
   const std::vector<Statement *> statements_;
 
  public:
@@ -186,7 +190,7 @@ class StatementList final : Statement {
   PROPERTY_CONST_REF_GETTER(statements)
 };
 
-class IfStatement final : Statement {
+class IfStatement final : public Statement {
   Expression *condition_;
   Statement *then_statement_;
   Statement *else_statement_;
@@ -218,7 +222,7 @@ class IfStatement final : Statement {
   PROPERTY_GETTER(else_statement)
 };
 
-class WhileStatement final : Statement {
+class WhileStatement final : public Statement {
   Expression *cond_;
   Statement *body_;
 
@@ -236,7 +240,7 @@ class WhileStatement final : Statement {
   PROPERTY_GETTER(body)
 };
 
-class CallStatement final : Statement {
+class CallStatement final : public Statement {
   std::string callee_;
 
  public:
@@ -248,7 +252,7 @@ class CallStatement final : Statement {
   PROPERTY_CONST_REF_GETTER(callee)
 };
 
-class ReadStatement final : Statement {
+class ReadStatement final : public Statement {
   const std::vector<VariableProxy *> targets_;
 
  public:
@@ -262,7 +266,7 @@ class ReadStatement final : Statement {
   PROPERTY_CONST_REF_GETTER(targets)
 };
 
-class WriteStatement final : Statement {
+class WriteStatement final : public Statement {
   const std::vector<Expression *> expressions_;
 
  public:
@@ -277,7 +281,7 @@ class WriteStatement final : Statement {
   PROPERTY_CONST_REF_GETTER(expressions)
 };
 
-class VariableProxy final : Expression {
+class VariableProxy final : public Expression {
   Symbol *target_;
 
  public:
@@ -289,7 +293,7 @@ class VariableProxy final : Expression {
   PROPERTY_GETTER(target)
 };
 
-class AssignStatement final : Statement {
+class AssignStatement final : public Statement {
   VariableProxy *target_;
   Expression *expr_;
 
@@ -309,14 +313,14 @@ class AssignStatement final : Statement {
   PROPERTY_GETTER(expr)
 };
 
-class ReturnStatement final : Statement {
+class ReturnStatement final : public Statement {
  public:
   ReturnStatement() : Statement(AstNodeType::kReturnStatement) {}
 
   ~ReturnStatement() final = default;
 };
 
-class UnaryOperation final : Expression {
+class UnaryOperation final : public Expression {
   Token op_;
   Expression *expr_;
 
@@ -331,7 +335,7 @@ class UnaryOperation final : Expression {
   PROPERTY_GETTER(expr)
 };
 
-class BinaryOperation final : Expression {
+class BinaryOperation final : public Expression {
   Token op_;
   Expression *left_;
   Expression *right_;
@@ -355,7 +359,7 @@ class BinaryOperation final : Expression {
   PROPERTY_GETTER(right)
 };
 
-class Literal final : Expression {
+class Literal final : public Expression {
   int value_;
 
  public:

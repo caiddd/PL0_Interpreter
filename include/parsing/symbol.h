@@ -21,7 +21,7 @@ class Symbol {
   std::string name_;
 };
 
-class Variable : Symbol {
+class Variable : public Symbol {
  public:
   Variable(std::string name, int level, int index)
       : Symbol(std::move(name)), level_(level), index_(index) {}
@@ -37,7 +37,7 @@ class Variable : Symbol {
   int index_;
 };
 
-class Constant : Symbol {
+class Constant : public Symbol {
  public:
   Constant(std::string name, int value)
       : Symbol(std::move(name)), value_(value) {}
@@ -48,7 +48,7 @@ class Constant : Symbol {
   int value_;
 };
 
-class Procedure : Symbol {
+class Procedure : public Symbol {
  public:
   const static int kInvalidAddress = -1;
   
