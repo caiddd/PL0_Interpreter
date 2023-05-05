@@ -1,10 +1,11 @@
 #ifndef PARSING_LEXER_H
 #define PARSING_LEXER_H
 
-#include "../util.h"
-#include "token.h"
 #include <cctype>
 #include <istream>
+
+#include "../util.h"
+#include "token.h"
 
 namespace pl0 {
 
@@ -15,6 +16,7 @@ class Lexer {
   }
 
   Token peek() { return peek_; }
+  bool Peek(Token tk) { return peek_ == tk; }
   Location &loc() { return loc_; }
   std::string literal_buffer() { return literal_buffer_; }
 
