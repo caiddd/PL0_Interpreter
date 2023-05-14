@@ -16,9 +16,10 @@ void Parser::EnterScope() {
 }
 
 void Parser::LeaveScope() {
-  auto *inner = top_;
+  // TODO delete need to think
+  // auto *inner = top_;
   top_ = top_->enclosing_scope();
-  delete inner;
+  // delete inner;
 }
 
 ast::Block *Parser::SubProgram() {
@@ -184,7 +185,6 @@ ast::Expression *Parser::Condition() {
 
 ast::Expression *Parser::Expression() {
   auto *lhs = Term();
-  //TODO: maybe have a question in order
   while (lexer_.Peek(Token::ADD) or lexer_.Peek(Token::SUB)) {
     auto op = lexer_.Next();
     lhs = new ast::BinaryOperation(op, lhs, Term());
@@ -209,6 +209,7 @@ ast::Expression *Parser::Factor() {
     if (sym == nullptr) {
       throw GeneralError("undeclared identifier \"", id, '"');
     }
+    return new ast::VariableProxy(sym);
   }
   if (lexer_.Peek(Token::NUMBER)) { return new ast::Literal(Number()); }
   if (lexer_.Match(Token::LPAREN)) {
