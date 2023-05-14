@@ -1,11 +1,15 @@
-#include "parsing/lexer.h"
 #include <fstream>
 #include <iostream>
 
+#include "argparser.h"
+#include "ast/printer.h"
+#include "parsing/parser.h"
+
 struct options {
-  bool show_tokens;
+  bool show_ast = false;
+  bool show_tokens = false;
   std::string input_file;
-} option;
+};
 
 [[noreturn]] void PrintTokens(pl0::Lexer &lex) {
   while (true) {
@@ -18,18 +22,30 @@ struct options {
   exit(0);
 }
 
-void parse_args(int argc, const char *argv[]) {
-  // TODO : Write a class to parse the arguments later
-  if (argc != 2) {
-    std::cerr << "Error: Wrong number of parameters \n";
-    exit(-1);
+options parse_args(int argc, const char *argv[]) {
+  try {
+    options option;
+    std::vector<std::string> rest;
+    pl0::ArgumentParser<options> parser{"Yet Another PL/0 Interpreter"};
+    parser.Flags(
+        {"--show-tokens", "-l"}, "Print all tokens.", &options::show_tokens);
+    parser.Flags(
+        {"--show-ast", "-t"}, "Print abstract syntax tree.",
+        &options::show_ast);
+    parser.Parse(argc, argv, option, rest);
+
+    if (rest.empty()) { parser.ShowHelp(); }
+
+    option.input_file = rest[0];
+    return option;
+  } catch (pl0::BasicError &error) {
+    std::cout << "Error: " << error.what() << '\n';
+    exit(EXIT_FAILURE);
   }
-  option.show_tokens = true;
-  option.input_file = argv[1];
 }
 
 int main(int argc, const char *argv[]) {
-  parse_args(argc, argv);
+  auto option = parse_args(argc, argv);
 
   std::ifstream fin(option.input_file);
   if (fin.fail()) {
@@ -40,5 +56,22 @@ int main(int argc, const char *argv[]) {
 
   pl0::Lexer lex(fin);
   if (option.show_tokens) { PrintTokens(lex); }
+
+  pl0::Parser parser(lex);
+  pl0::ast::Block *program = nullptr;
+
+  try {
+    program = parser.Program();
+  } catch (pl0::GeneralError &error) {
+    pl0::Location const loc = lex.loc();
+    std::cout << "Error(" << loc.to_string() << "): " << error.what() << '\n';
+    return EXIT_FAILURE;
+  }
+
+  if (option.show_ast) {
+    pl0::ast::AstPrinter printer(std::cout);
+    printer.VisitBlock(program);
+  }
+
   return 0;
 }
