@@ -31,13 +31,13 @@ class BasicError {
   std::string message_;
 };
 
-class GeneralError : BasicError {
+class GeneralError : public BasicError {
  public:
   template<typename... Args>
   explicit GeneralError(Args... args) : BasicError(Concat(args...)) {}
 };
 
-class SyntaxError : BasicError {
+class SyntaxError : public BasicError {
  public:
   template<typename... Args>
   explicit SyntaxError(Location loc, Args... args)

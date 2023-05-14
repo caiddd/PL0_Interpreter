@@ -374,11 +374,27 @@ class Literal final : public Expression {
 template<class Visitor>
 class AstVisitor {
  protected:
-  Visitor *impl() { return static_cast<Visitor *>(this); }
+  Visitor *Impl() { return static_cast<Visitor *>(this); }
 
  public:
-  void visit(AstNode *node) { impl()->visit(node); }
+  void Visit(AstNode *node) { Impl()->Visit(node); }
 };
+
+#define DECLARE_VISIT(type) void Visit##type(ast::type *node);
+
+#define DECLARE_VISIT_METHODS AST_NODE_LIST(DECLARE_VISIT)
+
+#define GENERATE_VISIT_CASE(type) \
+  case ast::AstNodeType::k##type:  \
+    return this->Impl()->Visit##type(dynamic_cast<ast::type *>(node));
+
+#define GENERATE_AST_VISITOR_SWITCH() \
+  switch (node->type()) { AST_NODE_LIST(GENERATE_VISIT_CASE) }
+
+#define DEFINE_AST_VISITOR_SUBCLASS_MEMBERS \
+  void Visit(ast::AstNode *node) {            \
+    GENERATE_AST_VISITOR_SWITCH()             \
+  }
 
 } // namespace pl0::ast
 
