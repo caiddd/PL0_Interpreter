@@ -9,27 +9,27 @@ namespace pl0 {
 #define IGNORE_TOKEN(name, string)
 
 // This is for better presentation
-#define TOKEN_LIST(T, K)     \
+#define TOKEN_LIST(T, O, K)     \
   T(UNUSED, "unused")           \
   /* End of source indicator */ \
   T(EOS, "end of source")       \
   T(NUMBER, "number")           \
   T(IDENTIFIER, "identifier")   \
   /* Unary operator */          \
-  T(ODD, "odd")                 \
+  O(ODD, "odd")                 \
   /* Binary operators */        \
-  T(ADD, "+")                   \
-  T(SUB, "-")                   \
-  T(MUL, "*")                   \
-  T(DIV, "/")                   \
+  O(ADD, "+")                   \
+  O(SUB, "-")                   \
+  O(MUL, "*")                   \
+  O(DIV, "/")                   \
   T(ASSIGN, ":=")               \
   /* Compare operators */       \
-  T(EQ, "=")                    \
-  T(NEQ, "#")                   \
-  T(LE, "<")                    \
-  T(LEQ, "<=")                  \
-  T(GE, ">")                    \
-  T(GEQ, ">=")                  \
+  O(EQ, "=")                    \
+  O(NEQ, "#")                   \
+  O(LE, "<")                    \
+  O(LEQ, "<=")                  \
+  O(GE, ">")                    \
+  O(GEQ, ">=")                  \
   /* Punctuators */             \
   T(LPAREN, "(")                \
   T(RPAREN, ")")                \
@@ -56,17 +56,17 @@ namespace pl0 {
 
 // Gets the left side of the above macro as the enum name
 #define T(name, string) name,
-enum class Token : int { TOKEN_LIST(T, T) };
+enum class Token : int { TOKEN_LIST(T, T, T) };
 #undef T
 
 // Gets the right-hand build string array of the macros mentioned above
 #define T(name, string) string,
-const char* const token_string[] = {TOKEN_LIST(T, T)};
+const char* const token_string[] = {TOKEN_LIST(T, T, T)};
 #undef T
 
 #define K(name, string) {string, Token::name},
 const std::unordered_map<std::string, Token> keyword_map{
-    TOKEN_LIST(IGNORE_TOKEN, K)};
+    TOKEN_LIST(IGNORE_TOKEN, IGNORE_TOKEN, K)};
 #undef K
 
 inline const char* operator*(Token tkty) {
