@@ -10,6 +10,7 @@
 struct options {
   bool show_ast = false;
   bool show_tokens = false;
+  bool compile_only = false;
   bool show_bytecode = false;
   std::string input_file;
 };
@@ -45,6 +46,9 @@ options parse_args(int argc, const char *argv[]) {
     parser.Flags(
         {"--show-bytecode", "-s"}, "Print bytecode after code generation",
         &options::show_bytecode);
+    parser.Flags(
+        {"--compile-only", "-c"},
+        "If specified, bytecode will not be executed.", &options::compile_only);
     parser.Parse(argc, argv, option, rest);
 
     if (rest.empty()) { parser.ShowHelp(); }
@@ -90,6 +94,8 @@ int main(int argc, const char *argv[]) {
   }
 
   if (option.show_bytecode) { PrintBytecode(compiler.code()); }
+
+  if (!option.compile_only) { pl0::Execute(compiler.code()); }
 
   return 0;
 }
