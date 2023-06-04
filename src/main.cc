@@ -27,10 +27,12 @@ struct options {
 }
 
 void PrintBytecode(const pl0::bytecode &code) {
+  std::cout << "Bytecode Generate:\n";
   for (size_t i = 0; i < code.size(); i++) {
     std::cout << i << '\t' << *code[i].op << '\t' << code[i].level << '\t'
               << code[i].address << '\n';
   }
+  std::cout << '\n';
 }
 
 options parse_args(int argc, const char *argv[]) {
