@@ -44,6 +44,8 @@ class Constant : public Symbol {
 
   [[nodiscard]] int value() const { return value_; }
 
+  [[nodiscard]] bool IsConstant() const override { return true; }
+
  private:
   int value_;
 };
@@ -51,7 +53,7 @@ class Constant : public Symbol {
 class Procedure : public Symbol {
  public:
   const static int kInvalidAddress = -1;
-  
+
   Procedure(std::string name, int level)
       : Symbol(std::move(name)), level_(level) {}
 

@@ -88,7 +88,14 @@ int main(int argc, const char *argv[]) {
   }
 
   pl0::code::Compiler compiler{};
-  compiler.Generate(program);
+
+  try {
+    compiler.Generate(program);
+  } catch (pl0::GeneralError &error) {
+    pl0::Location const loc = lex.loc();
+    std::cout << "Error(" << loc.to_string() << "): " << error.what() << '\n';
+    return EXIT_FAILURE;
+  }
 
   if (option.show_ast) {
     pl0::ast::AstPrinter printer(std::cout);
