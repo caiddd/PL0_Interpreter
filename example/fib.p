@@ -16,6 +16,6 @@ end;
 begin
     x := 0; 
     y := 1;
-    n := 10;
+    read n;
     call fib
 end.
